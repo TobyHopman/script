@@ -1,0 +1,87 @@
+Deel 1 Programma's Installeren
+
+
+
+#!/bin/bash
+
+echo "Wil je Apache installeren en downloaden? y/n"
+read g
+
+if [ $g = "y" ]
+
+then 
+	sudo apt install apache2
+	echo "Apache is nu bezig met installeren"
+
+elif [ $g = "n" ] 
+
+then 
+	echo "Apache word niet gedownload"
+fi
+
+echo "Nextcloud word nu geinstalleerd"
+wget https://download.nextcloud.com/server/releases/nextcloud-21.0.1.zip
+echo "Nextcloud is nu bezig met installeren"
+
+echo "Fail2ban word nu geinstalleerd"
+sudo apt install fail2ban
+echo "Fail2ban is nu bezig met installeren"
+
+echo "deze programma's zijn nu geinstalleerd"
+
+
+
+Deel 2 HTTPS
+
+
+
+#!/bin/bash
+
+echo "Eerst word snapd geinstalleerd"
+
+	sudo zypper install snapd
+
+	sudo systemctl enable --now snapd
+
+echo "Nu word Certbot geinstalleerd"
+
+	sudo snap install core; sudo snap refresh core
+
+	sudo snap install --classic certbot
+
+	sudo ln -s /snap/bin/certbot /usr/bin/certbot
+
+	sudo certbot --apache
+
+echo "Nu is Certbot volledig geinstalleerd"
+
+
+
+Deel 3 Firewall
+
+
+
+#!/bin/bash
+
+if [ "$1"= '-h' ]; then
+	echo "firewall.sh zorgt ervoor dat al het in en uitgaand verkeer geblokkeerd word mids aangegeven door het script"
+	echo "usage: firewall.sh"
+	echo "firewall.sh [ip_address]"
+else
+	iptables -F
+	iptables -A INPUT -j DROP
+	iptables -A OUTPUT -j DROP
+	echo "Firewall is opgezet. Er is geen communicatie meer"
+
+	for ip in $a; do
+		iptables -I INPUT -s "$ip" -j ACCEPT
+		iptables -I OUTPUT -d "$ip" -j ACCEPT
+		echo "Firewall aangepast. Communicatie is nu toegestaan met $ip"
+	done
+
+	echo "Aangepaste firewall
+	iptables -L     
+fi
+
+
+
